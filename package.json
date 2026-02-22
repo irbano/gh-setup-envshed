@@ -1,6 +1,6 @@
 {
   "name": "setup-envshed",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "GitHub Action to inject Envshed secrets into your workflow",
   "main": "dist/index.js",

@@ -25800,13 +25800,15 @@ async function run() {
     }
     if (inputs.exportTo === "env") {
         for (const [key, value] of entries) {
-            core.setSecret(value);
+            if (value !== "")
+                core.setSecret(value);
             core.exportVariable(key, value);
         }
     }
     else {
         for (const [, value] of entries) {
-            core.setSecret(value);
+            if (value !== "")
+                core.setSecret(value);
         }
         const envContent = formatEnvFile(secrets);
         const resolvedPath = path.resolve(inputs.filePath);

@@ -330,6 +330,37 @@ describe("run", () => {
     );
   });
 
+  it("skips setSecret for empty string values but masks falsy-looking ones", async () => {
+    setInputs();
+    mockApiResponse(200, {
+      secrets: {
+        FILLED: "has-value",
+        EMPTY: "",
+        ZERO: "0",
+        FALSE_STR: "false",
+        NULL_STR: "null",
+        UNDEFINED_STR: "undefined",
+      },
+      placeholders: [],
+      version: 1,
+    });
+
+    await run();
+
+    // Empty string must NOT be masked (triggers GitHub warning)
+    expect(mockCore.setSecret).not.toHaveBeenCalledWith("");
+    // All non-empty values must be masked, even falsy-looking strings
+    expect(mockCore.setSecret).toHaveBeenCalledWith("has-value");
+    expect(mockCore.setSecret).toHaveBeenCalledWith("0");
+    expect(mockCore.setSecret).toHaveBeenCalledWith("false");
+    expect(mockCore.setSecret).toHaveBeenCalledWith("null");
+    expect(mockCore.setSecret).toHaveBeenCalledWith("undefined");
+    expect(mockCore.setSecret).toHaveBeenCalledTimes(5);
+    // Empty value should still be exported as env var
+    expect(mockCore.exportVariable).toHaveBeenCalledWith("EMPTY", "");
+    expect(mockCore.exportVariable).toHaveBeenCalledWith("ZERO", "0");
+  });
+
   it("handles singular secret count in message", async () => {
     setInputs();
     mockApiResponse(200, {
