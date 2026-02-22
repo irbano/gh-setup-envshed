@@ -14,8 +14,8 @@ jobs:
         continue-on-error: true
         with:
           token: invalid_token_12345
-          org: my-org
-          project: my-project
+          org: gh-action-example
+          project: gh-action-example
           environment: production
           api-url: ${{ secrets.API_URL }}
 
@@ -37,8 +37,8 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.ENVSHED_TOKEN }}
-          org: my-org
-          project: my-project
+          org: gh-action-example
+          project: gh-action-example
           environment: staging
           api-url: ${{ secrets.API_URL }}
 
@@ -61,8 +61,8 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.ENVSHED_TOKEN }}
-          org: my-org
-          project: my-project
+          org: gh-action-example
+          project: gh-action-example
           environment: empty
           api-url: ${{ secrets.API_URL }}
 

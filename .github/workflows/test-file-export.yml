@@ -12,8 +12,8 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.ENVSHED_TOKEN }}
-          org: my-org
-          project: my-project
+          org: gh-action-example
+          project: gh-action-example
           environment: production
           api-url: ${{ secrets.API_URL }}
           export-to: file
