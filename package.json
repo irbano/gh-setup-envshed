@@ -1,0 +1,30 @@
+{
+  "name": "setup-envshed",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action to inject Envshed secrets into your workflow",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "test": "vitest run",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/"
+  },
+  "keywords": [
+    "github-action",
+    "envshed",
+    "secrets",
+    "environment-variables"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/http-client": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vercel/ncc": "^0.38.3",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
+  }
+}

@@ -1,0 +1,34 @@
+name: 'Setup Envshed'
+description: 'Inject Envshed secrets into your GitHub Actions workflow'
+branding:
+  icon: 'lock'
+  color: 'green'
+inputs:
+  token:
+    description: 'Envshed API token'
+    required: true
+  org:
+    description: 'Organization slug'
+    required: true
+  project:
+    description: 'Project slug'
+    required: true
+  environment:
+    description: 'Environment slug'
+    required: false
+    default: 'production'
+  api-url:
+    description: 'Envshed API URL'
+    required: false
+    default: 'https://app.envshed.com'
+  export-to:
+    description: 'Where to export secrets: "env" (environment variables) or "file" (.env file)'
+    required: false
+    default: 'env'
+  file-path:
+    description: 'Path to write .env file (only used with export-to: file)'
+    required: false
+    default: '.env'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

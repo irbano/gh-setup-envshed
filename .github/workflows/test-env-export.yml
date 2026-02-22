@@ -1,0 +1,43 @@
+name: "Example: Export as env vars"
+
+on: [push]
+
+jobs:
+  test-env-export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Envshed (env mode)
+        uses: ./
+        with:
+          token: ${{ secrets.ENVSHED_TOKEN }}
+          org: my-org
+          project: my-project
+          environment: production
+          api-url: ${{ secrets.API_URL }}
+
+      - name: Verify secrets are available as env vars
+        run: |
+          echo "Checking DATABASE_URL is set..."
+          if [ -z "$DATABASE_URL" ]; then
+            echo "FAIL: DATABASE_URL is not set"
+            exit 1
+          fi
+          echo "PASS: DATABASE_URL is set (masked in logs)"
+
+          echo "Checking API_KEY is set..."
+          if [ -z "$API_KEY" ]; then
+            echo "FAIL: API_KEY is not set"
+            exit 1
+          fi
+          echo "PASS: API_KEY is set (masked in logs)"
+
+          echo "Checking NODE_ENV is set..."
+          if [ -z "$NODE_ENV" ]; then
+            echo "FAIL: NODE_ENV is not set"
+            exit 1
+          fi
+          echo "PASS: NODE_ENV is set (masked in logs)"
+
+          echo "All env var checks passed!"

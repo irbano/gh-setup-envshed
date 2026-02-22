@@ -1,0 +1,48 @@
+name: "Example: Export as .env file"
+
+on: [push]
+
+jobs:
+  test-file-export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Envshed (file mode)
+        uses: ./
+        with:
+          token: ${{ secrets.ENVSHED_TOKEN }}
+          org: my-org
+          project: my-project
+          environment: production
+          api-url: ${{ secrets.API_URL }}
+          export-to: file
+          file-path: .env.local
+
+      - name: Verify .env file was created
+        run: |
+          echo "Checking .env.local exists..."
+          if [ ! -f .env.local ]; then
+            echo "FAIL: .env.local was not created"
+            exit 1
+          fi
+          echo "PASS: .env.local exists"
+
+          echo "Checking file has content..."
+          LINE_COUNT=$(wc -l < .env.local)
+          echo "File has $LINE_COUNT lines"
+          if [ "$LINE_COUNT" -lt 1 ]; then
+            echo "FAIL: .env.local is empty"
+            exit 1
+          fi
+          echo "PASS: .env.local has content"
+
+          echo "Checking file format (KEY=\"VALUE\" pairs)..."
+          if grep -qE '^[A-Z_]+=".+"$' .env.local; then
+            echo "PASS: file format looks correct"
+          else
+            echo "FAIL: file format is unexpected"
+            exit 1
+          fi
+
+          echo "All file export checks passed!"

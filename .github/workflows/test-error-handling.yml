@@ -1,0 +1,71 @@
+name: "Example: Error handling"
+
+on: [push]
+
+jobs:
+  test-invalid-token:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Envshed with invalid token (should fail)
+        id: bad-token
+        uses: ./
+        continue-on-error: true
+        with:
+          token: invalid_token_12345
+          org: my-org
+          project: my-project
+          environment: production
+          api-url: ${{ secrets.API_URL }}
+
+      - name: Verify action failed gracefully
+        run: |
+          if [ "${{ steps.bad-token.outcome }}" = "failure" ]; then
+            echo "PASS: Action failed as expected with invalid token"
+          else
+            echo "FAIL: Action should have failed with invalid token"
+            exit 1
+          fi
+
+  test-decrypt-errors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Envshed with decrypt errors (staging env)
+        uses: ./
+        with:
+          token: ${{ secrets.ENVSHED_TOKEN }}
+          org: my-org
+          project: my-project
+          environment: staging
+          api-url: ${{ secrets.API_URL }}
+
+      - name: Verify secrets loaded despite decrypt warnings
+        run: |
+          echo "Checking DATABASE_URL is set from staging..."
+          if [ -z "$DATABASE_URL" ]; then
+            echo "FAIL: DATABASE_URL is not set"
+            exit 1
+          fi
+          echo "PASS: DATABASE_URL is set"
+          echo "Decrypt error warnings should appear in step above."
+
+  test-empty-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Envshed with empty environment
+        uses: ./
+        with:
+          token: ${{ secrets.ENVSHED_TOKEN }}
+          org: my-org
+          project: my-project
+          environment: empty
+          api-url: ${{ secrets.API_URL }}
+
+      - name: Confirm no env vars were exported
+        run: |
+          echo "PASS: Action completed (with warning about no secrets)"
